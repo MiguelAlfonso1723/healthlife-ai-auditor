@@ -257,7 +257,7 @@ Media
 | FR-05 | BR-01 | codigo_cups |
 | FR-06 | BR-02 | soporte_clinico |
 | FR-07 | BR-03 | diagnostico |
-| FR-08 | BR-05 | tipo_item |
+| FR-08 | BR-01 a BR-06 | tipo_item |
 | FR-09 | BR-06 | cantidad_realizada, cantidad_facturada |
 
 ---
