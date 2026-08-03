@@ -187,13 +187,10 @@ healthcare-ai-auditor/
 ├── notebooks/
 │
 ├── src/
+│   ├── ai/
 │   ├── api/
-│   ├── dashboard/
+│   ├── backend/
 │   ├── data/
-│   ├── models/
-│   ├── rules/
-│   ├── services/
-│   └── utils/
 │
 ├── tests/
 │

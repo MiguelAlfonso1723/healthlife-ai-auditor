@@ -160,6 +160,8 @@ Este vector será utilizado como entrada para una red convolucional unidimension
 
 ✅ Seleccionada.
 
+> **Nota:** La decisión definitiva sobre el formato de entrada del modelo (campos textuales mediante embeddings o vectores numéricos derivados de las variables del Master Dataset) será tomada durante la fase Data Understanding, una vez evaluada la calidad, completitud y relevancia de los datos disponibles.
+
 ---
 
 # 4. Comparación de Alternativas

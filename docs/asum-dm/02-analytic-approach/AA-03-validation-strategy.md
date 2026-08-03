@@ -183,7 +183,7 @@ Si ninguna regla detecta inconsistencias:
 
 Si una o más reglas detectan inconsistencias:
 
-- El registro será enviado al modelo de Inteligencia Artificial.
+- Si el Motor de Reglas detecta inconsistencias, estas serán clasificadas según su naturaleza. Las inconsistencias que puedan resolverse únicamente mediante reglas de negocio generarán directamente una alerta. Aquellas que requieran interpretación clínica o análisis contextual serán enviadas al modelo de Inteligencia Artificial para obtener una evaluación adicional antes de generar la alerta final..
 
 ## Paso 5
 
