@@ -34,6 +34,14 @@
 - Project KPIs
 - Business Understanding Review
 
+### ✅ Data Understanding (Completed)
+- Source Dataset Analysis
+- Data Dictionary
+- Data Quality Assessment
+- Dataset Relationships
+- Exploratory Data Analysis (EDA)
+- Data Understanding Review
+
 Next Phase:
 
-➡️ Analytic Approach
+➡️ Data Preparation
