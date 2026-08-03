@@ -109,7 +109,11 @@ Verificar la consistencia entre diagnósticos y procedimientos.
 
 **Campos involucrados**
 
-- diagnostico
+- diagnostico_principal_cie10
+- descripcion_diagnostico
+
+del dataset 02_atenciones
+
 - codigo_cups
 
 > **Nota:** Esta regla depende de la disponibilidad de los campos de diagnóstico en los datos clínicos. Si dichos campos se encuentran en otro conjunto de datos, la implementación deberá integrarlos durante la fase de Data Preparation.
