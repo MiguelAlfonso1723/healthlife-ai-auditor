@@ -18,6 +18,8 @@ REQUIRED_FILES = [
     "src/ai/train_and_evaluate.py",
     "src/ai/inference.py",
     "src/backend/api.py",
+    "dashboard/app.py",
+    "dashboard/README.md",
 ]
 
 
@@ -32,6 +34,11 @@ def main() -> int:
         failures.append("Legacy typo file still exists: requeriments.txt")
 
     if not failures:
+        requirements = (PROJECT_ROOT / "requirements.txt").read_text(encoding="utf-8")
+        for package in ["streamlit", "plotly"]:
+            if package not in requirements:
+                failures.append(f"Dashboard dependency missing from requirements.txt: {package}")
+
         comparison = pd.read_csv(PROJECT_ROOT / "models" / "model_comparison.csv")
         if len(comparison) < 6:
             failures.append("Expected at least six model candidates in comparison.")
