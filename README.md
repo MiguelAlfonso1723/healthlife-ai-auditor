@@ -12,20 +12,6 @@
 
 https://healthlife-api.onrender.com
 
-Swagger UI:
-
-https://healthlife-api.onrender.com/docs
-
----
-
-# Documentation
-
-Complete documentation is available in:
-
-- docs/
-- Google Drive repository
-
-https://drive.google.com/drive/folders/1DNaGulYBbmoAVqPRwV3Fr4ee65qnVQrT?usp=sharing
 
 ---
 
