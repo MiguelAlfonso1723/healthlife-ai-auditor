@@ -94,6 +94,10 @@ def inject_css() -> None:
         section[data-testid="stSidebar"] * {{
             color: white !important;
         }}
+        section[data-testid="stSidebar"] .badge {{
+            color: {COLORS['blue_dark']} !important;
+            background: #E3F2FD !important;
+        }}
         .main-title {{
             font-family: Cambria, Georgia, serif;
             font-size: 2.35rem;
@@ -145,7 +149,7 @@ def inject_css() -> None:
             border-radius: 999px;
             padding: .25rem .65rem;
             background: #E3F2FD;
-            color: {COLORS['blue_dark']};
+            color: {COLORS['blue_dark']} !important;
             font-weight: 700;
             font-size: .8rem;
             margin-right: .35rem;
