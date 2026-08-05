@@ -10,7 +10,7 @@
 
 ## REST API
 
-https://healthlife-api.onrender.com
+https://healthlife-ai-auditor-api-cyw1.onrender.com
 
 
 ---
@@ -204,11 +204,7 @@ Platform:
 
 Production endpoint:
 
-https://healthlife-api.onrender.com
-
-Documentation:
-
-https://healthlife-api.onrender.com/docs
+https://healthlife-ai-auditor-api-cyw1.onrender.com
 
 
 ---
