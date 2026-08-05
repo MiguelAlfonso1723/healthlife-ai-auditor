@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import sys
 import time
 from pathlib import Path
@@ -299,7 +300,7 @@ def apply_plot_style(fig: go.Figure, height: int = 390) -> go.Figure:
         plot_bgcolor="rgba(0,0,0,0)",
         font=dict(family="Cambria, Georgia, serif", color=COLORS["ink"]),
         margin=dict(l=20, r=20, t=55, b=25),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        legend=dict(orientation="h", yanchor="top", y=-0.18, xanchor="center", x=0.5),
         hoverlabel=dict(bgcolor="white", font_size=13),
     )
     return fig
@@ -400,7 +401,7 @@ def executive_dashboard(dfh: pd.DataFrame, comparison: pd.DataFrame, registry: D
     with right:
         rule = dfh[dfh["rule_main"].ne("OK")]["rule_main"].value_counts().reindex([f"BR-0{i}" for i in range(1, 7)], fill_value=0).reset_index()
         rule.columns = ["Regla", "Alertas"]
-        fig = px.bar(rule, x="Regla", y="Alertas", color="Regla", title="Alertas por regla",
+        fig = px.bar(rule, x="Regla", y="Alertas", color="Regla", title="Alertas por<br>Regla",
                      color_discrete_sequence=px.colors.qualitative.Set2)
         st.plotly_chart(apply_plot_style(fig), width="stretch")
 
@@ -628,7 +629,7 @@ def model_performance_page(comparison: pd.DataFrame, registry: Dict[str, Any]) -
     radar = go.Figure()
     for _, row in top.iterrows():
         radar.add_trace(go.Scatterpolar(r=[row[m] for m in radar_metrics], theta=radar_metrics, fill="toself", name=row["name"]))
-    radar.update_layout(polar=dict(radialaxis=dict(visible=True, range=[0, 1])), title="Perfil comparativo top modelos")
+    radar.update_layout(polar=dict(radialaxis=dict(visible=True, range=[0, 1])), title="Perfil Comparativo Top<br>Modelos")
     m1.plotly_chart(apply_plot_style(radar, 480), width="stretch")
 
     selected_model = m2.selectbox("Modelo para matriz de confusion", comparison["name"].tolist())
@@ -695,13 +696,38 @@ def about_page(registry: Dict[str, Any]) -> None:
         ("Motor de Reglas", 3, 4), ("IA / Modelos", 3, 2), ("Politica CASE 1-4", 4, 3),
         ("API", 5, 3), ("Dashboard", 6, 3),
     ]
+    # Radius offset in data units to stop arrows at the node border, not the center
+    # marker size=76px ≈ 0.38 data units in this coordinate space
+    R = 0.38
+    edges = [(0,3,1,3),(1,3,2,3),(2,3,3,4),(2,3,3,2),(3,4,4,3),(3,2,4,3),(4,3,5,3),(5,3,6,3)]
+    for x0, y0, x1, y1 in edges:
+        dx, dy = x1 - x0, y1 - y0
+        dist = math.hypot(dx, dy)
+        ux, uy = dx / dist, dy / dist  # unit vector
+        # Arrow tip stops at the destination node border
+        sx1, sy1 = x1 - ux * R, y1 - uy * R
+        # Line body drawn as shape below nodes (from origin border to dest border)
+        sx0, sy0 = x0 + ux * R, y0 + uy * R
+        architecture.add_shape(
+            type="line", x0=sx0, y0=sy0, x1=sx1, y1=sy1,
+            xref="x", yref="y",
+            line=dict(color=COLORS["gray"], width=2),
+            layer="below",
+        )
+        # Arrowhead annotation: tip at dest border, tail just behind the tip.
+        # Both ax/ay and x/y are near the dest border so only the arrowhead renders;
+        # the shape line drawn below covers the full body between the two nodes.
+        architecture.add_annotation(
+            x=sx1, y=sy1, ax=sx0, ay=sy0,
+            xref="x", yref="y", axref="x", ayref="y",
+            showarrow=True, arrowhead=3, arrowsize=1.3, arrowwidth=2,
+            arrowcolor=COLORS["gray"], text="",
+        )
+    # Nodes added after shapes so they render on top
     for label, x, y in nodes:
         architecture.add_trace(go.Scatter(x=[x], y=[y], mode="markers+text", text=[label],
-                                          textposition="middle center", marker=dict(size=76, color=COLORS["blue"] if x < 3 else COLORS["teal"]),
+                                          textposition="middle center", marker=dict(size=76, color="#42A5F5" if x < 3 else COLORS["teal"]),
                                           hovertext=[label], name=label))
-    for x0, y0, x1, y1 in [(0,3,1,3),(1,3,2,3),(2,3,3,4),(2,3,3,2),(3,4,4,3),(3,2,4,3),(4,3,5,3),(5,3,6,3)]:
-        architecture.add_annotation(x=x1, y=y1, ax=x0, ay=y0, xref="x", yref="y", axref="x", ayref="y",
-                                    showarrow=True, arrowhead=3, arrowsize=1.3, arrowwidth=2, arrowcolor=COLORS["gray"])
     architecture.update_xaxes(visible=False)
     architecture.update_yaxes(visible=False)
     architecture.update_layout(showlegend=False, title="Flujo del sistema")
@@ -738,7 +764,15 @@ def about_page(registry: Dict[str, Any]) -> None:
     st.markdown("### Tecnologias utilizadas")
     st.markdown("Python, Pandas, Scikit-learn, TensorFlow/Keras, SentenceTransformers, XGBoost, LightGBM, Plotly, Streamlit, FastAPI.")
     st.markdown("### Integrantes")
-    st.info("Agregar nombres del equipo en esta seccion antes de la entrega final.")
+    st.info(
+        f"""
+        - David Antonio García Contreras
+        - Miguel Angel Alfonso Saavedra
+        - Johann Smith Rivera Montoya
+        - Yineth Daniela Botina Puerras
+        - Diego Alejandro Bejarano Prada
+        """
+    )
 
 
 def main() -> None:
