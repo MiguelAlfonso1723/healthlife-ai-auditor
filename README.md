@@ -6,6 +6,37 @@
 
 ---
 
+# Live Demo
+
+## REST API
+
+https://healthlife-api.onrender.com
+
+Swagger UI:
+
+https://healthlife-api.onrender.com/docs
+
+---
+
+# Documentation
+
+Complete documentation is available in:
+
+- docs/
+- Google Drive repository
+
+https://drive.google.com/drive/folders/1DNaGulYBbmoAVqPRwV3Fr4ee65qnVQrT?usp=sharing
+
+---
+
+## Project Resources
+
+Google Drive (documentation, reports, presentation and deliverables)
+
+https://drive.google.com/drive/folders/1DNaGulYBbmoAVqPRwV3Fr4ee65qnVQrT?usp=sharing
+
+---
+
 # Business Problem
 
 Actualmente, las inconsistencias entre la Historia Clínica y la Pre-facturación suelen detectarse durante auditorías posteriores a la facturación, generando:
@@ -175,6 +206,24 @@ source venv/bin/activate
 
 pip install -r requirements.txt
 ```
+---
+
+# Deployment
+
+The production REST API is deployed on Render.
+
+Platform:
+
+- Render
+
+Production endpoint:
+
+https://healthlife-api.onrender.com
+
+Documentation:
+
+https://healthlife-api.onrender.com/docs
+
 
 ---
 
@@ -202,6 +251,25 @@ Proyecto académico desarrollado dentro del programa **Samsung Innovation Campus
 
 ---
 
+# Project Status
+
+**Current Version:** 1.0
+
+**Status:** ✅ Completed
+
+The project has successfully completed all phases of the ASUM-DM methodology:
+
+- Business Understanding
+- Analytic Approach
+- Data Understanding
+- Data Preparation
+- Modeling
+- Evaluation
+- Deployment
+
+The REST API has been deployed in production using Render and the project is ready for demonstration.
+
+---
 # Project Progress
 ## ✅ Business Understanding (Completed)
 
@@ -278,6 +346,41 @@ The official training pipeline compares the following models:
 
 - ✅ 13/13 tests passed.
 
+
+## ✅ Evaluation (Completed)
+
+- Medical Business Rules Validation
+- End-to-End Validation
+- Business KPI Validation
+- Final Evaluation Report
+
+## ✅ Deployment (Completed)
+
+- REST API
+- Interactive Dashboard
+- Production Deployment
+- Final Documentation
+
 ---
 
+## Final Results
 
+The implemented solution integrates:
+
+- Business Rules Engine (BR-01 to BR-06)
+- Hybrid XGBoost AI Model
+- REST API developed with FastAPI
+- Interactive Dashboard built with Streamlit
+- Automated Alert Generation
+- End-to-End Medical Billing Validation Workflow
+
+Main achievements:
+
+- Accuracy: 76.52%
+- Balanced Accuracy: 75.85%
+- Macro-F1: 73.47%
+- Inconsistency Recall: 73.85%
+- Complete ASUM-DM implementation
+- Production deployment completed
+  
+---
