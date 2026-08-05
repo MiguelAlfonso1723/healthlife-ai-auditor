@@ -1,31 +1,20 @@
-"""
-BR-01 — Procedure Billing Validation.
-
-Validates that procedures registered in the Clinical History
-have been included in the Pre-invoice.
-
-A procedure registered but NOT billed represents a potential
-revenue leakage for the organization.
-"""
+"""BR-01 - Procedure billing and CUPS code validation."""
 
 from typing import Dict, Optional
+
 from ..models import ValidationAlert
 from .base_rule import BaseRule
 
 
 class BR01ProcedureValidation(BaseRule):
-    """Detects procedures registered in HC but not billed in PF."""
+    """Detects missing billing records and mismatched billed CUPS codes."""
 
     @property
     def rule_id(self) -> str:
         return "BR-01"
 
     def evaluate(self, record: Dict) -> Optional[ValidationAlert]:
-        """Evaluate if a registered procedure was billed.
-
-        Condition: id_detalle_hc exists but id_prefactura is missing.
-        This means the clinical record exists but no billing was generated.
-        """
+        """Evaluate whether a clinical procedure was billed correctly."""
         has_hc = self._get_field(record, "id_detalle_hc") is not None
         has_pf = self._get_field(record, "id_prefactura") is not None
 
@@ -36,9 +25,23 @@ class BR01ProcedureValidation(BaseRule):
                 alert_type="NO_FACTURADO",
                 severity="ALTA",
                 description=(
-                    f"Procedimiento con código CUPS {codigo} registrado en "
-                    f"Historia Clínica pero no incluido en la Pre-factura. "
+                    f"Procedimiento con codigo CUPS {codigo} registrado en "
+                    f"Historia Clinica pero no incluido en la Pre-factura. "
                     f"Posible fuga de ingresos."
+                ),
+            )
+
+        codigo_hc = self._get_field(record, "codigo_cups")
+        codigo_pf = self._get_field(record, "codigo_cups_facturado")
+        if has_hc and has_pf and codigo_hc and codigo_pf and codigo_hc != codigo_pf:
+            return ValidationAlert(
+                rule=self.rule_id,
+                alert_type="CODIGO_NO_COINCIDE",
+                severity="ALTA",
+                description=(
+                    f"Codigo CUPS registrado en Historia Clinica ({codigo_hc}) "
+                    f"no coincide con el codigo facturado ({codigo_pf}). "
+                    f"Requiere revision de codificacion antes de facturar."
                 ),
             )
 
