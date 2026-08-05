@@ -16,5 +16,6 @@ pytest
 fastapi
 uvicorn
 streamlit
+plotly
 python-dotenv
 openpyxl
