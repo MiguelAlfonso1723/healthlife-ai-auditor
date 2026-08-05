@@ -1,0 +1,35 @@
+# EV-01 - Model Evaluation Report
+
+## Evaluation Protocol
+
+- Target: `tipo_alerta` multiclass alert classification.
+- Test split: 20%, stratified, random_state=42.
+- Selection score: 45% macro-F1, 35% inconsistency recall, 20% balanced accuracy.
+- Target leakage columns excluded: resultado, tipo_alerta, severidad, descripcion_alerta.
+
+## Final Ranking
+
+```csv
+name,family,model_path,embedding_source,fit_seconds,accuracy,balanced_accuracy,macro_f1,weighted_f1,inconsistency_recall,inconsistency_precision,selection_score
+xgboost_hybrid_sentence,hybrid_boosting,models\artifacts\xgboost_hybrid_sentence.joblib,sentence-transformer-local:models\artifacts\sentence_transformer_model,28.85544490814209,0.7651757188498403,0.7585125448028673,0.7347488613766117,0.8057647759735556,0.7384615384615385,0.4682926829268293,0.7408010350415872
+lightgbm_hybrid_sentence,hybrid_boosting,models\artifacts\lightgbm_hybrid_sentence.joblib,sentence-transformer-local:models\artifacts\sentence_transformer_model,51.03139138221741,0.9201277955271565,0.7430891577060933,0.7735570158183318,0.8993823743873199,0.6461538461538462,0.9655172413793104,0.7228723348133141
+mlp_hybrid_sentence,hybrid_deep_learning,models\artifacts\mlp_hybrid_sentence.keras,sentence-transformer-local:models\artifacts\sentence_transformer_model,27.575629949569702,0.744408945686901,0.7370967741935485,0.713517324694929,0.7891446735615812,0.7153846153846154,0.4386792452830189,0.7188867663360432
+random_forest_calibrated,tabular,models\artifacts\random_forest_calibrated.joblib,none,5.206454277038574,0.9153354632587859,0.7065972222222223,0.7191330936647939,0.8869173941958928,0.6230769230769231,1.0,0.6830062596705248
+sentence_logistic_regression,sentence_embedding_classifier,models\artifacts\sentence_logistic_regression.joblib,sentence-transformer-local:models\artifacts\sentence_transformer_model,1.003023624420166,0.48881789137380194,0.6815972222222223,0.518828391504892,0.579754058542671,0.8692307692307693,0.288265306122449,0.674022989852415
+cnn_1d_textual_real,cnn_text,models\artifacts\cnn_1d_textual_real.keras,keras_text_vectorization,66.75163269042969,0.6038338658146964,0.619489247311828,0.4939336587479401,0.6781166910134507,0.7769230769230769,0.3470790378006873,0.6180910728220156
+tfidf_logistic_regression,nlp_tfidf,models\artifacts\tfidf_logistic_regression.joblib,none,0.294844388961792,0.4217252396166134,0.5613799283154122,0.3936090191541954,0.5126208194660083,0.9,0.2785714285714286,0.6044000442824704
+sentence_linear_svm,sentence_embedding_classifier,models\artifacts\sentence_linear_svm.joblib,sentence-transformer-local:models\artifacts\sentence_transformer_model,11.492636442184448,0.8913738019169329,0.5381944444444444,0.5550792150508597,0.8503142114573652,0.49230769230769234,1.0,0.5297322279694681
+tfidf_linear_svm,nlp_tfidf,models\artifacts\tfidf_linear_svm.joblib,none,0.4606516361236572,0.8738019169329073,0.4767361111111111,0.4691214861690827,0.8234494446693289,0.46923076923076923,1.0,0.4706826602290787
+```
+
+## Winner
+
+Selected model: `xgboost_hybrid_sentence`.
+Model path: `models\artifacts\xgboost_hybrid_sentence.joblib`.
+Selection score: 0.7408.
+
+## Deployment Notes
+
+- Use the registry file `models/model_registry.json` to load the winning artifact.
+- The CNN was trained as a real text-sequence Conv1D model using tokenized text, not global embeddings.
+- Sentence embedding models use SentenceTransformer when available and fall back to TF-IDF+SVD only if model download/runtime fails.

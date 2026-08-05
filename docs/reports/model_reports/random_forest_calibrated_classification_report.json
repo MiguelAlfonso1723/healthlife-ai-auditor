@@ -1,0 +1,51 @@
+{
+  "CANTIDAD_DISCORDANTE": {
+    "precision": 0.7777777777777778,
+    "recall": 1.0,
+    "f1-score": 0.875,
+    "support": 14.0
+  },
+  "CODIGO_NO_COINCIDE": {
+    "precision": 1.0,
+    "recall": 0.8333333333333334,
+    "f1-score": 0.9090909090909091,
+    "support": 24.0
+  },
+  "CONSISTENTE": {
+    "precision": 0.9100917431192661,
+    "recall": 1.0,
+    "f1-score": 0.9529298751200769,
+    "support": 496.0
+  },
+  "DIAGNOSTICO_NO_RELACIONADO": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 30.0
+  },
+  "NO_FACTURADO": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 30.0
+  },
+  "SIN_SOPORTE_CLINICO": {
+    "precision": 1.0,
+    "recall": 0.40625,
+    "f1-score": 0.5777777777777777,
+    "support": 32.0
+  },
+  "accuracy": 0.9153354632587859,
+  "macro avg": {
+    "precision": 0.781311586816174,
+    "recall": 0.7065972222222223,
+    "f1-score": 0.7191330936647939,
+    "support": 626.0
+  },
+  "weighted avg": {
+    "precision": 0.8758696381406468,
+    "recall": 0.9153354632587859,
+    "f1-score": 0.8869173941958928,
+    "support": 626.0
+  }
+}

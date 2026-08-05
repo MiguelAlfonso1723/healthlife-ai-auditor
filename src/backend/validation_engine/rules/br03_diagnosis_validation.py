@@ -1,63 +1,64 @@
-"""
-BR-03 — Diagnosis Validation.
-
-Validates coherence between the registered diagnosis (CIE-10)
-and the procedures registered in the Clinical History.
-
-According to BU-03, the fields involved are:
-    - diagnostico_principal_cie10  (from atenciones)
-    - descripcion_diagnostico      (from atenciones)
-    - codigo_cups                  (from historia_clinica)
-
-An inconsistency is flagged when a clinical record exists but
-the associated diagnosis is unavailable, making it impossible
-to verify whether the procedure is medically justified.
-
-NOTE: Comparison between codigo_cups and codigo_cups_facturado
-belongs to BR-01 (billing completeness), not BR-03.
-"""
+"""BR-03 - Diagnosis/procedure consistency validation."""
 
 from typing import Dict, Optional
+
 from ..models import ValidationAlert
 from .base_rule import BaseRule
 
 
 class BR03DiagnosisValidation(BaseRule):
-    """Detects missing or unavailable diagnosis for registered procedures."""
+    """Detects missing or incompatible diagnosis/procedure pairs."""
+
+    DIAGNOSIS_ALLOWED_CUPS = {
+        "A090": {"890415", "890301", "902210", "890201", "890201-M"},
+        "C349": {"871111", "890415", "890301", "930601", "890201"},
+        "E119": {"890415", "903841", "890301", "902210", "890201"},
+        "F411": {"990601", "890201", "890301", "890415"},
+        "H269": {"890201", "391013", "890301", "890415"},
+        "I10X": {"890415", "890301", "902210", "890201", "890701"},
+        "I219": {"890415", "890301", "902210", "890201", "890701", "391201"},
+        "J189": {"871111", "890415", "890301", "902210", "890201", "930601"},
+        "K358": {"890415", "890301", "890201", "881201", "391121"},
+        "M545": {"890201", "890301", "890415"},
+        "N390": {"903875", "890415", "890301", "890201", "881201"},
+        "O800": {"739001", "890415", "881332", "890301", "890201"},
+        "R073": {"871111", "890415", "890301", "890201", "890701"},
+        "S824": {"930878", "890201", "890301", "890415"},
+        "Z348": {"881332", "890201", "890301", "890415"},
+    }
 
     @property
     def rule_id(self) -> str:
         return "BR-03"
 
     def evaluate(self, record: Dict) -> Optional[ValidationAlert]:
-        """Evaluate diagnosis availability for clinical records.
-
-        Condition: A clinical record (id_detalle_hc) exists but the
-        associated diagnosis (diagnostico_principal_cie10) is missing,
-        making it impossible to confirm that the procedure is
-        consistent with the patient's diagnosis.
-
-        This differs from BR-01 (procedure not billed) and BR-02
-        (no clinical support for a billed procedure).
-        """
+        """Evaluate clinical coherence between diagnosis and procedure."""
         has_hc = self._get_field(record, "id_detalle_hc") is not None
-        diagnostico = self._get_field(record, "diagnostico_principal_cie10")
-
-        # Only evaluate when there is a clinical record to validate
         if not has_hc:
             return None
 
+        diagnostico = self._get_field(record, "diagnostico_principal_cie10")
+        codigo = self._get_field(record, "codigo_cups")
+
         if diagnostico is None:
-            codigo = self._get_field(record, "codigo_cups", "N/A")
-            return ValidationAlert(
-                rule=self.rule_id,
-                alert_type="DIAGNOSTICO_NO_RELACIONADO",
-                severity="MEDIA",
-                description=(
-                    f"Procedimiento con código CUPS {codigo} registrado en "
-                    f"Historia Clínica sin diagnóstico principal disponible. "
-                    f"No es posible verificar la pertinencia médica del procedimiento."
-                ),
+            return self._alert(codigo or "N/A", "sin diagnostico principal disponible")
+
+        allowed = self.DIAGNOSIS_ALLOWED_CUPS.get(str(diagnostico))
+        if allowed is not None and codigo is not None and str(codigo) not in allowed:
+            return self._alert(
+                str(codigo),
+                f"no esta en la matriz de compatibilidad del diagnostico {diagnostico}",
             )
 
         return None
+
+    def _alert(self, codigo: str, reason: str) -> ValidationAlert:
+        return ValidationAlert(
+            rule=self.rule_id,
+            alert_type="DIAGNOSTICO_NO_RELACIONADO",
+            severity="MEDIA",
+            description=(
+                f"Procedimiento con codigo CUPS {codigo} {reason}. "
+                f"Requiere validacion de pertinencia medica."
+            ),
+        )
