@@ -471,6 +471,10 @@ def validation_page(dfh: pd.DataFrame) -> None:
                 "descripcion": descripcion,
             }
         )
+
+        status_placeholder = st.empty()
+        status_placeholder.markdown("⏳ **Cargando...**")
+
         start = time.perf_counter()
         result = MedicalValidationEngine().validate(record)
         latency_ms = (time.perf_counter() - start) * 1000
@@ -478,6 +482,11 @@ def validation_page(dfh: pd.DataFrame) -> None:
         ai_status = "CONSISTENTE" if ai_alert == "CONSISTENTE" else "INCONSISTENTE"
         case_row = pd.Series({"rule_status": result.status, "ai_status": ai_status, "ai_probability": ai_prob})
         case = policy_case(case_row)
+
+        status_placeholder.markdown(
+            f"<span style='color:{COLORS['blue']};font-weight:700;font-size:1rem;'>✔ Evaluación Completa</span>",
+            unsafe_allow_html=True,
+        )
 
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Resultado reglas", result.status)
